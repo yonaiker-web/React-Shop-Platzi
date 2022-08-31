@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState, useMemo } from "react";
+import React, { useEffect, useReducer, useState, useMemo, useRef } from "react";
 
 //creamos el estado inicial
 const initialState = {
@@ -10,6 +10,9 @@ const initialState = {
 const favoriteReducer = (state, action) => {
   switch (action.type) {
     case "ADD_TO_FAVORITE":
+      if (state.favorites.find((f) => f.id === action.payload.id)) {
+        return state;
+      }
       return {
         ...state,
         favorites: [...state.favorites, action.payload],
@@ -23,9 +26,10 @@ const Character = () => {
   const [characters, setCharacters] = useState([]);
   //creamos el reducer que hace el llamado a favoriteReducer que es la funcion en concreto del reducer y el valor inicial que es initialState
   const [favorites, dispatch] = useReducer(favoriteReducer, initialState);
-
   //estado par el usememo
   const [search, setSearch] = useState("");
+  //valor que almacena el contenido del input
+  const searctInput = useRef(null);
 
   //accion que se carga una sola vez
   useEffect(() => {
@@ -43,8 +47,8 @@ const Character = () => {
   };
 
   //funcion para capturar el valor del input
-  const handleSearch = (e) => {
-    setSearch(e.target.value);
+  const handleSearch = () => {
+    setSearch(searctInput.current.value);
   };
 
   //funcion para filtrar usuario del characters que viene del useEffect, pasando por parametro el user
@@ -56,9 +60,10 @@ const Character = () => {
   const filteredUsers = useMemo(
     () =>
       characters.filter((user) => {
-        return user.name.toLowerCase().includes(search.toLowerCase());
+        return user.name.toLowerCase().includes(search.toLowerCase()); //&&
+        //!favorites.favorites.find((f) => f.name === user.name)
       }),
-    [characters, search]
+    [characters, search] //, favorites.favorites.length]
   );
 
   return (
@@ -69,7 +74,12 @@ const Character = () => {
 
       <div className="Search">
         {/*  */}
-        <input type="text" value={search} onChange={handleSearch} />
+        <input
+          type="text"
+          value={search}
+          onChange={handleSearch}
+          ref={searctInput}
+        />
       </div>
 
       {filteredUsers.map((character) => (
