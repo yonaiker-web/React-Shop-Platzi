@@ -1,4 +1,12 @@
-import React, { useEffect, useReducer, useState, useMemo, useRef } from "react";
+import React, {
+  useEffect,
+  useReducer,
+  useState,
+  useMemo,
+  useRef,
+  useCallback,
+} from "react";
+import Search from "./Search";
 
 //creamos el estado inicial
 const initialState = {
@@ -47,9 +55,13 @@ const Character = () => {
   };
 
   //funcion para capturar el valor del input
-  const handleSearch = () => {
-    setSearch(searctInput.current.value);
-  };
+  // const handleSearch = () => {
+  //   setSearch(searctInput.current.value);
+  // };
+
+  const handleSearch = useCallback(() => {
+    setSearch;
+  }, [second]);
 
   //funcion para filtrar usuario del characters que viene del useEffect, pasando por parametro el user
   // const filteredUsers = characters.filter((user) => {
@@ -71,16 +83,11 @@ const Character = () => {
       {favorites.favorites.map((favorite) => (
         <li key={favorite.id}>{favorite.name}</li>
       ))}
-
-      <div className="Search">
-        {/*  */}
-        <input
-          type="text"
-          value={search}
-          onChange={handleSearch}
-          ref={searctInput}
-        />
-      </div>
+      <Search
+        search={search}
+        searctInput={searctInput}
+        handleSearch={handleSearch}
+      />
 
       {filteredUsers.map((character) => (
         <div className="item" key={character.id}>
